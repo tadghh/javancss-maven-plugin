@@ -33,7 +33,7 @@ public class NumericNodeComparator implements Comparator<Node> {
     /**
      * the tag property used by this comparator
      */
-    private String tagProperty;
+    private final String tagProperty;
 
     /**
      * The numeric node tag property to used by this comparator.
@@ -47,6 +47,7 @@ public class NumericNodeComparator implements Comparator<Node> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int compare(Node node1, Node node2) {
         return node2.numberValueOf(tagProperty).intValue()
                 - node1.numberValueOf(tagProperty).intValue();

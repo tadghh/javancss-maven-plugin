@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javancss.Javancss;
 import javancss.parser.ParseException;
@@ -42,12 +43,12 @@ public class NcssExecuter {
 
     // the full path to the directory holding the sources to point JavaNCSS to.
     // Or the location of a file holding the path towards all files. (javancss style *sigh* :)
-    private File sourceLocation;
+    private final File sourceLocation;
 
     // JavaNCSS will write an xml output into this file.
-    private String outputFilename;
+    private final String outputFilename;
 
-    private String[] fileList;
+    private final String[] fileList;
 
     private String encoding = null;
 
@@ -137,7 +138,7 @@ public class NcssExecuter {
     }
 
     private String[] getCommandLineArgument() {
-        List<String> argumentList = new ArrayList<String>(ARG_SIZE);
+        List<String> argumentList = new ArrayList<>(ARG_SIZE);
         argumentList.add("-package");
         argumentList.add("-object");
         argumentList.add("-function");
@@ -158,11 +159,9 @@ public class NcssExecuter {
         if ((sourceLocation != null) && (sourceLocation.isDirectory())) {
             argumentList.add(sourceLocation.getAbsolutePath());
         } else {
-            for (int i = 0; i < fileList.length; i++) {
-                argumentList.add(fileList[i]);
-            }
+            argumentList.addAll(Arrays.asList(fileList));
         }
-        return (String[]) argumentList.toArray(new String[argumentList.size()]);
+        return argumentList.toArray(new String[argumentList.size()]);
     }
 
     public static String getJavaNCSSVersion() {

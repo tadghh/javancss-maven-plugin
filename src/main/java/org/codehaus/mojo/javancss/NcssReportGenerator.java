@@ -600,6 +600,7 @@ public class NcssReportGenerator extends AbstractNcssReportGenerator {
     }
 
     // sink helper to start a section
+    @Override
     protected void startSection(String link, String title) {
         super.startSection(link, title);
         navigationBar();

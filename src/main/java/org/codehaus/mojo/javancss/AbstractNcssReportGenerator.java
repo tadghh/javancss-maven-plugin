@@ -33,9 +33,9 @@ import org.apache.maven.plugin.logging.Log;
  * @version $Id$
  */
 public abstract class AbstractNcssReportGenerator {
-    private ResourceBundle bundle;
-    private Sink sink;
-    private Log log;
+    private final ResourceBundle bundle;
+    private final Sink sink;
+    private final Log log;
 
     protected AbstractNcssReportGenerator(Sink sink, ResourceBundle bundle, Log log) {
         this.bundle = bundle;

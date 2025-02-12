@@ -92,22 +92,28 @@ public class NcssViolationCheckMojo extends AbstractMojo {
     @Parameter(property = "ncss.skip", defaultValue = "false")
     private boolean skip;
 
+    /**
+     *
+     * @throws MojoExecutionException
+     * @throws MojoFailureException
+     */
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip || (sourceDirectory == null) || !sourceDirectory.exists()) {
             return;
         }
-        Set<String> ccnViolation = new HashSet<String>();
-        Set<String> ncssViolation = new HashSet<String>();
+        Set<String> ccnViolation = new HashSet<>();
+        Set<String> ncssViolation = new HashSet<>();
         List<Node> methodList = loadDocument().selectNodes("//javancss/functions/function");
         // Count ccn & ncss violations
         for (Node node : methodList) {
             // count ccn violation
-            int ccn = new Integer(node.valueOf("ccn")).intValue();
+            int ccn = Integer.parseInt(node.valueOf("ccn"));
             if (ccn > ccnLimit) {
                 ccnViolation.add(node.valueOf("name"));
             }
             // count ncss violation
-            int ncss = new Integer(node.valueOf("ncss")).intValue();
+            int ncss = Integer.parseInt(node.valueOf("ncss"));
             if (ncss > ncssLimit) {
                 ncssViolation.add(node.valueOf("name"));
             }
@@ -129,7 +135,7 @@ public class NcssViolationCheckMojo extends AbstractMojo {
 
     private void reportViolation(String statName, Set<String> violationSet, int limit) throws MojoFailureException {
         getLog().debug(statName + " Violation = " + violationSet.size());
-        if (violationSet.size() > 0) {
+        if (!violationSet.isEmpty()) {
             String violationString =
                     "Your code has " + violationSet.size() + " method(s) with a " + statName + " greater than " + limit;
             getLog().warn(violationString);

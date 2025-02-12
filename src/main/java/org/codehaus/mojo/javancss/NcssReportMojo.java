@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -116,8 +117,10 @@ public class NcssReportMojo extends AbstractMavenReport {
     private boolean skip;
 
     /**
+     * @throws org.apache.maven.reporting.MavenReportException
      * @see org.apache.maven.reporting.MavenReport#executeReport(java.util.Locale)
      */
+    @Override
     public void executeReport(Locale locale) throws MavenReportException {
         if (!canGenerateReport()) {
             return;
@@ -140,7 +143,7 @@ public class NcssReportMojo extends AbstractMavenReport {
             getLog().debug("basedir: " + basedir);
             getLog().debug("output: " + output);
         }
-        String relative = null;
+        String relative;
         if (output.startsWith(basedir)) {
             relative = output.substring(basedir.length() + 1);
         } else {
@@ -149,7 +152,7 @@ public class NcssReportMojo extends AbstractMavenReport {
             return;
         }
         getLog().debug("relative: " + relative);
-        List<ModuleReport> reports = new ArrayList<ModuleReport>();
+        List<ModuleReport> reports = new ArrayList<>();
         for (MavenProject child : reactorProjects) {
             File xmlReport = new File(child.getBasedir() + File.separator + relative, tempFileName);
             if (xmlReport.exists()) {
@@ -175,8 +178,8 @@ public class NcssReportMojo extends AbstractMavenReport {
         if (getLog().isDebugEnabled()) {
             getLog().debug("Calling NcssExecuter with src: " + sourceDirectory);
             getLog().debug("                       output: " + buildOutputFileName());
-            getLog().debug("                     includes: " + includes);
-            getLog().debug("                     excludes: " + excludes);
+            getLog().debug("                     includes: " + Arrays.toString(includes));
+            getLog().debug("                     excludes: " + Arrays.toString(excludes));
             getLog().debug("                     encoding: " + getInputEncoding());
         }
 
@@ -227,14 +230,16 @@ public class NcssReportMojo extends AbstractMavenReport {
     }
 
     /**
+     * @return
      * @see org.apache.maven.reporting.MavenReport#canGenerateReport()
      */
+    @Override
     public boolean canGenerateReport() {
         return !skip && (canGenerateSingleReport() || canGenerateAggregateReport());
     }
 
     private boolean canGenerateAggregateReport() {
-        if (project.getModules().size() == 0) {
+        if (project.getModules().isEmpty()) {
             // no child modules
             return false;
         }
@@ -293,15 +298,21 @@ public class NcssReportMojo extends AbstractMavenReport {
     }
 
     /**
+     * @param locale
+     * @return
      * @see org.apache.maven.reporting.MavenReport#getName(java.util.Locale)
      */
+    @Override
     public String getName(Locale locale) {
         return getBundle(locale).getString("report.javancss.name");
     }
 
     /**
+     * @param locale
+     * @return
      * @see org.apache.maven.reporting.MavenReport#getDescription(java.util.Locale)
      */
+    @Override
     public String getDescription(Locale locale) {
         return getBundle(locale).getString("report.javancss.description");
     }
@@ -311,8 +322,11 @@ public class NcssReportMojo extends AbstractMavenReport {
     }
 
     /**
+     * @return
      * @see org.apache.maven.reporting.MavenReport#getOutputName()
      */
+    @Override
+    @SuppressWarnings("deprecation")
     public String getOutputName() {
         return OUTPUT_NAME;
     }
@@ -332,6 +346,7 @@ public class NcssReportMojo extends AbstractMavenReport {
     }
 
     // blatantly copied from maven pmd plugin
+    @SuppressWarnings("unchecked")
     protected String constructXRefLocation() {
         String location = null;
         if (linkXRef) {
