@@ -322,16 +322,6 @@ public class NcssReportMojo extends AbstractMavenReport {
     }
 
     /**
-     * @return
-     * @see org.apache.maven.reporting.MavenReport#getOutputName()
-     */
-    @Override
-    @SuppressWarnings("deprecation")
-    public String getOutputName() {
-        return OUTPUT_NAME;
-    }
-
-    /**
      * Getter for the source directory
      *
      * @return the source directory as a File object.
@@ -374,5 +364,10 @@ public class NcssReportMojo extends AbstractMavenReport {
             }
         }
         return location;
+    }
+
+    @Override
+    public String getOutputName() {
+        return OUTPUT_NAME;
     }
 }
