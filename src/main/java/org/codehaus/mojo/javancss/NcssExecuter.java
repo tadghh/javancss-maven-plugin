@@ -25,12 +25,10 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
 import javancss.Javancss;
 import javancss.parser.ParseException;
 
 import org.apache.maven.reporting.MavenReportException;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * The NcssExecuter is able to call JavaNCSS to produce a code analysis.<br>
@@ -39,8 +37,7 @@ import org.codehaus.plexus.util.IOUtil;
  * @author <a href="jeanlaurent@gmail.com">Jean-Laurent de Morlhon</a>
  * @version $Id$
  */
-public class NcssExecuter
-{
+public class NcssExecuter {
     private static final int ARG_SIZE = 8;
 
     // the full path to the directory holding the sources to point JavaNCSS to.
@@ -58,8 +55,7 @@ public class NcssExecuter
      * Construct a NcssExecuter with no arguments.<br>
      * Used for testing.
      */
-    /* package */NcssExecuter()
-    {
+    /* package */ NcssExecuter() {
         this.sourceLocation = null;
         this.outputFilename = null;
         this.fileList = null;
@@ -71,27 +67,23 @@ public class NcssExecuter
      * @param sourceDirectory the directory where the source to analyze are.
      * @param outputFilename the output file where the result will be written.
      */
-    public NcssExecuter( File sourceDirectory, String outputFilename )
-    {
+    public NcssExecuter(File sourceDirectory, String outputFilename) {
         this.sourceLocation = sourceDirectory;
         this.outputFilename = outputFilename;
         this.fileList = null;
     }
 
-    public NcssExecuter( String[] fileList, String outputFilename )
-    {
+    public NcssExecuter(String[] fileList, String outputFilename) {
         this.sourceLocation = null;
         this.fileList = fileList;
         this.outputFilename = outputFilename;
     }
 
-    public void setEncoding( String encoding )
-    {
+    public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
-    public String getEncoding()
-    {
+    public String getEncoding() {
         return encoding;
     }
 
@@ -100,106 +92,83 @@ public class NcssExecuter
      *
      * @throws MavenReportException if something goes bad during the execution
      */
-    public void execute()
-        throws MavenReportException
-    {
-        try
-        {
-            Javancss javancss = new Javancss( getCommandLineArgument() );
+    public void execute() throws MavenReportException {
+        try {
+            Javancss javancss = new Javancss(getCommandLineArgument());
             Throwable ncssThrow = javancss.getLastError();
-            if ( ncssThrow != null )
-            {
-                String lastErrorMessage = limit( javancss.getLastErrorMessage(), 3 );
+            if (ncssThrow != null) {
+                String lastErrorMessage = limit(javancss.getLastErrorMessage(), 3);
 
-                if ( ncssThrow instanceof ParseException )
-                {
-                    throw new MavenReportException( "Parsing error while executing JavaNCSS " + getJavaNCSSVersion()
-                        + " " + lastErrorMessage, (Exception) ncssThrow );
+                if (ncssThrow instanceof ParseException) {
+                    throw new MavenReportException(
+                            "Parsing error while executing JavaNCSS " + getJavaNCSSVersion() + " " + lastErrorMessage,
+                            (Exception) ncssThrow);
                 }
 
-                Exception e = ( ncssThrow instanceof Exception ) ? (Exception) ncssThrow : new Exception( ncssThrow );
-                throw new MavenReportException( "Unexpected error while executing JavaNCSS " + getJavaNCSSVersion()
-                    + " " + lastErrorMessage, e );
+                Exception e = (ncssThrow instanceof Exception) ? (Exception) ncssThrow : new Exception(ncssThrow);
+                throw new MavenReportException(
+                        "Unexpected error while executing JavaNCSS " + getJavaNCSSVersion() + " " + lastErrorMessage,
+                        e);
             }
-        }
-        catch ( IOException ioe )
-        {
-            throw new MavenReportException( "IO Error while executing JavaNCSS " + getJavaNCSSVersion(), ioe );
+        } catch (IOException ioe) {
+            throw new MavenReportException("IO Error while executing JavaNCSS " + getJavaNCSSVersion(), ioe);
         }
     }
 
-    private String limit( String source, int lines )
-    {
-        BufferedReader reader = new BufferedReader( new StringReader( source ) );
+    private String limit(String source, int lines) {
+        BufferedReader reader = new BufferedReader(new StringReader(source));
         StringBuilder sb = new StringBuilder();
-        try
-        {
-            for ( int i = 0; i < lines; i++ )
-            {
+        try {
+            for (int i = 0; i < lines; i++) {
                 String line = reader.readLine();
 
-                if ( line != null )
-                {
-                    if ( sb.length() > 0 )
-                    {
-                        sb.append( "\n" );
+                if (line != null) {
+                    if (sb.length() > 0) {
+                        sb.append("\n");
                     }
-                    sb.append( line );
+                    sb.append(line);
                 }
             }
-        }
-        catch ( IOException ioe )
-        {
+            reader.close();
+        } catch (IOException ioe) {
             // cannot happen: in-memory StringReader
-        }
-        finally
-        {
-            IOUtil.close( reader );
         }
         return sb.toString();
     }
 
-    private String[] getCommandLineArgument()
-    {
-        List<String> argumentList = new ArrayList<String>( ARG_SIZE );
-        argumentList.add( "-package" );
-        argumentList.add( "-object" );
-        argumentList.add( "-function" );
-        argumentList.add( "-xml" );
-        argumentList.add( "-recursive" );
-        argumentList.add( "-out" );
-        argumentList.add( outputFilename );
+    private String[] getCommandLineArgument() {
+        List<String> argumentList = new ArrayList<String>(ARG_SIZE);
+        argumentList.add("-package");
+        argumentList.add("-object");
+        argumentList.add("-function");
+        argumentList.add("-xml");
+        argumentList.add("-recursive");
+        argumentList.add("-out");
+        argumentList.add(outputFilename);
 
-        if ( encoding != null )
-        {
-            argumentList.add( "-encoding" );
-            argumentList.add( encoding );
+        if (encoding != null) {
+            argumentList.add("-encoding");
+            argumentList.add(encoding);
         }
 
         // If the source location is a directory, it means we can pass it straight to
         // javancss. If it's a file, we assume it's containing the file list to parse
         // so we pass it to javancss the way it expects it.
         // (check javancss cmd line doc for more information)
-        if ( ( sourceLocation != null ) && ( sourceLocation.isDirectory() ) )
-        {
-            argumentList.add( sourceLocation.getAbsolutePath() );
-        }
-        else
-        {
-            for ( int i = 0; i < fileList.length; i++ )
-            {
-                argumentList.add( fileList[i] );
+        if ((sourceLocation != null) && (sourceLocation.isDirectory())) {
+            argumentList.add(sourceLocation.getAbsolutePath());
+        } else {
+            for (int i = 0; i < fileList.length; i++) {
+                argumentList.add(fileList[i]);
             }
         }
-        return (String[]) argumentList.toArray( new String[argumentList.size()] );
+        return (String[]) argumentList.toArray(new String[argumentList.size()]);
     }
 
-    public static String getJavaNCSSVersion()
-    {
+    public static String getJavaNCSSVersion() {
         Package p = Javancss.class.getPackage();
-        String version = ( p == null ) ? null : p.getSpecificationVersion();
-        if ( version == null )
-        {
+        String version = (p == null) ? null : p.getSpecificationVersion();
+        if (version == null) {
             version = "unknown";
         }
         return version;

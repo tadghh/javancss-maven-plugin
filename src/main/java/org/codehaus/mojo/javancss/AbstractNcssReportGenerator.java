@@ -32,220 +32,161 @@ import org.apache.maven.plugin.logging.Log;
  * @author <a href="jeanlaurent@NOSPAMgmail.com>Jean-Laurent de Morlhon</a>
  * @version $Id$
  */
-public abstract class AbstractNcssReportGenerator
-{
+public abstract class AbstractNcssReportGenerator {
     private ResourceBundle bundle;
-
     private Sink sink;
-
     private Log log;
 
-    /**
-     * build a new NcssReportGenerator.
-     *
-     * @param sink the sink that will be used for reporting.
-     * @param bundle the correct RessourceBundle to be used for reporting.
-     * @param log the log object enabling logging within maven plugins.
-     */
-    protected AbstractNcssReportGenerator( Sink sink, ResourceBundle bundle, Log log )
-    {
+    protected AbstractNcssReportGenerator(Sink sink, ResourceBundle bundle, Log log) {
         this.bundle = bundle;
         this.sink = sink;
         this.log = log;
     }
 
-    /**
-     * Getter for the Log instance.
-     *
-     * @return the current log instance associated with this report generator.
-     */
-    public Log getLog()
-    {
+    public Log getLog() {
         return this.log;
     }
 
-    /**
-     * Getter for the Sink instance.
-     *
-     * @return the current instance of Sink associated with this report generator.
-     */
-    public Sink getSink()
-    {
+    public Sink getSink() {
         return this.sink;
     }
 
-    /**
-     * Getter for the RessourceBundle.
-     *
-     * @return the current ResourceBundle associated with this report generator.
-     */
-    public ResourceBundle getResourceBundle()
-    {
+    public ResourceBundle getResourceBundle() {
         return this.bundle;
     }
 
-    /**
-     * sink helper to write a "code" itemList.
-     *
-     * @param text the text to write within the code tags.
-     */
-    protected void codeItemListHelper( String text )
-    {
+    protected void codeItemListHelper(String text) {
         sink.listItem();
         sink.monospaced();
-        sink.text( text );
+        sink.text(text);
         sink.monospaced_();
         sink.listItem_();
     }
 
-    /**
-     * sink helper to write a paragraph
-     *
-     * @param text the text to write within the paragraph.
-     */
-    protected void paragraphHelper( String text )
-    {
+    protected void paragraphHelper(String text) {
         sink.paragraph();
-        sink.text( text );
+        sink.text(text);
         sink.paragraph_();
     }
 
-    /**
-     * sink helper to write a subtitle
-     *
-     * @param text the text to write as a subtitle.
-     */
-    protected void subtitleHelper( String text )
-    {
+    protected void subtitleHelper(String text) {
         sink.paragraph();
         sink.bold();
-        sink.text( text );
+        sink.text(text);
         sink.bold_();
         sink.paragraph_();
     }
 
-    /**
-     * sink helper to write cell containing code.
-     *
-     * @param text the text to write within a cell and within code tags.
-     */
-    protected void codeCellHelper( String text )
-    {
+    protected void codeCellHelper(String text) {
         sink.tableCell();
         sink.monospaced();
-        sink.text( text );
+        sink.text(text);
         sink.monospaced_();
         sink.tableCell_();
     }
 
-    /**
-     * sink helper to write a simple table header cell.
-     *
-     * @param text the text to write within a table header cell.
-     */
-    protected void headerCellHelper( String text )
-    {
+    protected void headerCellHelper(String text) {
         sink.tableHeaderCell();
-        sink.text( text );
+        sink.text(text);
         sink.tableHeaderCell_();
     }
 
-    /**
-     * sink helper to write a simple table cell.
-     *
-     * @param text the text to write within a table cell.
-     */
-    protected void tableCellHelper( String text )
-    {
+    protected void tableCellHelper(String text) {
         sink.tableCell();
-        sink.text( text );
+        sink.text(text);
         sink.tableCell_();
     }
 
     /**
-     * sink helper to start a section.
-     *
-     * @param link the anchor link.
-     * @param title the title of the anchor link.
+     * Creates a new table with grid enabled.
      */
-    protected void startSection( String link, String title )
-    {
+    protected void startTable() {
+        sink.table();
+        sink.tableRows(null, true);
+    }
+
+    /**
+     * Ends the current table.
+     */
+    protected void endTable() {
+        sink.tableRows_();
+        sink.table_();
+    }
+
+    /**
+     * Creates a header row with multiple columns.
+     * @param headers Array of header text keys
+     */
+    protected void createTableHeader(String... headers) {
+        sink.tableRow();
+        for (String header : headers) {
+            sink.tableHeaderCell();
+            sink.text(getString(header));
+            sink.tableHeaderCell_();
+        }
+        sink.tableRow_();
+    }
+
+    protected void startSection(String link, String title) {
         sink.section1();
         sink.sectionTitle1();
-        sink.text( bundle.getString( title ) );
+        sink.text(bundle.getString(title));
         sink.sectionTitle1_();
 
-        sink.anchor( bundle.getString( link ) );
-        sink.text( bundle.getString( title ) );
+        sink.anchor(bundle.getString(link));
+        sink.text(bundle.getString(title));
         sink.anchor_();
     }
 
-    /**
-     * sink helper to end a section
-     */
-    protected void endSection()
-    {
+    protected void endSection() {
         sink.section1_();
     }
 
-    /**
-     * resource bundle helper to get a value.
-     *
-     * @param key the key for the desired string.
-     * @return the string for the given key.
-     */
-    protected String getString( String key )
-    {
-        return bundle.getString( key );
+    protected String getString(String key) {
+        return bundle.getString(key);
     }
 
-    /**
-     * Output the report introduction.
-     *
-     * @param withNavigationBar a boolean stating whether or not the navigationBar should be displayed.
-     */
-    protected void doIntro( boolean withNavigationBar )
-    {
-        getSink().section1();
-        getSink().sectionTitle1();
-        getSink().text( getString( "report.javancss.main.title" ) );
-        getSink().sectionTitle1_();
-        if ( withNavigationBar )
-        {
+    protected void doIntro(boolean withNavigationBar) {
+        sink.section1();
+        sink.sectionTitle1();
+        sink.text(getString("report.javancss.main.title"));
+        sink.sectionTitle1_();
+
+        if (withNavigationBar) {
             navigationBar();
         }
-        getSink().paragraph();
+
+        sink.paragraph();
         String version = NcssExecuter.getJavaNCSSVersion();
-        getSink().text( MessageFormat.format( getString( "report.javancss.main.text" ), version ) );
-        getSink().lineBreak();
-        getSink().link( "http://javancss.codehaus.org/" );
-        getSink().text( "JavaNCSS web site." );
-        getSink().link_();
-        getSink().paragraph_();
-        getSink().section1_();
+        sink.text(MessageFormat.format(getString("report.javancss.main.text"), version));
+        sink.lineBreak();
+        sink.link("http://javancss.codehaus.org/");
+        sink.text("JavaNCSS web site.");
+        sink.link_();
+        sink.paragraph_();
+        sink.section1_();
     }
 
-    // print out the navigation bar
-    protected void navigationBar()
-    {
-        getSink().paragraph();
-        getSink().text( "[ " );
-        getSink().link( "#" + getString( "report.javancss.package.link" ) );
-        getSink().text( getString( "report.javancss.package.link" ) );
-        getSink().link_();
-        getSink().text( " ] [ " );
-        getSink().link( "#" + getString( "report.javancss.object.link" ) );
-        getSink().text( getString( "report.javancss.object.link" ) );
-        getSink().link_();
-        getSink().text( " ] [ " );
-        getSink().link( "#" + getString( "report.javancss.function.link" ) );
-        getSink().text( getString( "report.javancss.function.link" ) );
-        getSink().link_();
-        getSink().text( " ] [ " );
-        getSink().link( "#" + getString( "report.javancss.explanation.link" ) );
-        getSink().text( getString( "report.javancss.explanation.link" ) );
-        getSink().link_();
-        getSink().text( " ]" );
-        getSink().paragraph_();
+    protected void navigationBar() {
+        sink.paragraph();
+        String[] sections = {
+            "report.javancss.package.link",
+            "report.javancss.object.link",
+            "report.javancss.function.link",
+            "report.javancss.explanation.link"
+        };
+
+        for (int i = 0; i < sections.length; i++) {
+            if (i > 0) {
+                sink.text(" ] [ ");
+            } else {
+                sink.text("[ ");
+            }
+            sink.link("#" + getString(sections[i]));
+            sink.text(getString(sections[i]));
+            sink.link_();
+        }
+        sink.text(" ]");
+        sink.paragraph_();
     }
 }

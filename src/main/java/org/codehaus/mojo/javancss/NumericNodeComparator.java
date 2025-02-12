@@ -29,9 +29,7 @@ import org.dom4j.Node;
  * @author <a href="jeanlaurentATgmail.com">Jean-Laurent de Morlhon</a>
  * @version $Id$
  */
-public class NumericNodeComparator
-    implements Comparator<Node>
-{
+public class NumericNodeComparator implements Comparator<Node> {
     /**
      * the tag property used by this comparator
      */
@@ -42,17 +40,15 @@ public class NumericNodeComparator
      *
      * @param property the tag property used by this comparator.
      */
-    public NumericNodeComparator( String property )
-    {
+    public NumericNodeComparator(String property) {
         this.tagProperty = property;
     }
 
     /**
      * {@inheritDoc}
      */
-    public int compare( Node node1, Node node2 )
-    {
-        return node2.numberValueOf( tagProperty ).intValue() - node1.numberValueOf( tagProperty ).intValue();
+    public int compare(Node node1, Node node2) {
+        return node2.numberValueOf(tagProperty).intValue()
+                - node1.numberValueOf(tagProperty).intValue();
     }
-
 }

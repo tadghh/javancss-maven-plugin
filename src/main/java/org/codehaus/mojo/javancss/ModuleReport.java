@@ -28,8 +28,7 @@ import org.dom4j.Document;
  * @author mperham
  * @version $Id$
  */
-public class ModuleReport
-{
+public class ModuleReport {
     /**
      * The MavenProject associated with the report.
      */
@@ -40,29 +39,24 @@ public class ModuleReport
      */
     private Document report;
 
-    public ModuleReport( MavenProject project, Document document )
-    {
+    public ModuleReport(MavenProject project, Document document) {
         module = project;
         report = document;
     }
 
-    public Document getJavancssDocument()
-    {
+    public Document getJavancssDocument() {
         return report;
     }
 
-    public void setReport( Document javancssDocument )
-    {
+    public void setReport(Document javancssDocument) {
         this.report = javancssDocument;
     }
 
-    public MavenProject getModule()
-    {
+    public MavenProject getModule() {
         return module;
     }
 
-    public void setModule( MavenProject project )
-    {
+    public void setModule(MavenProject project) {
         this.module = project;
     }
 }
