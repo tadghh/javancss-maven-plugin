@@ -74,16 +74,29 @@ public class NcssExecuter {
         this.fileList = null;
     }
 
+    /**
+     * Creates a NcssExecuter
+     * @param fileList some array of files
+     * @param outputFilename output file name
+     */
     public NcssExecuter(String[] fileList, String outputFilename) {
         this.sourceLocation = null;
         this.fileList = fileList;
         this.outputFilename = outputFilename;
     }
 
+    /**
+     * Sets the character encoding
+     * @param encoding character encoding
+     */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
+    /**
+     * Gets the character encoding
+     * @return String
+     */
     public String getEncoding() {
         return encoding;
     }
@@ -164,6 +177,10 @@ public class NcssExecuter {
         return argumentList.toArray(new String[argumentList.size()]);
     }
 
+    /**
+     * Gets the JavaNCSSVersion number for this plugin
+     * @return The version number as a string
+     */
     public static String getJavaNCSSVersion() {
         Package p = Javancss.class.getPackage();
         String version = (p == null) ? null : p.getSpecificationVersion();

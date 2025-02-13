@@ -39,23 +39,44 @@ public class ModuleReport {
      */
     private Document report;
 
+    /**
+     * Creates a new module report
+     * @param project project
+     * @param document document
+     */
     public ModuleReport(MavenProject project, Document document) {
         module = project;
         report = document;
     }
 
+    /**
+     * Gets the report document
+     * @return document
+     */
     public Document getJavancssDocument() {
         return report;
     }
 
+    /**
+     * Sets this modules report
+     * @param javancssDocument report
+     */
     public void setReport(Document javancssDocument) {
         this.report = javancssDocument;
     }
 
+    /**
+     * Gets the module
+     * @return module
+     */
     public MavenProject getModule() {
         return module;
     }
 
+    /**
+     * Sets the module
+     * @param project project
+     */
     public void setModule(MavenProject project) {
         this.module = project;
     }

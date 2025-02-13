@@ -31,12 +31,13 @@ import org.dom4j.Node;
 /**
  * Generates the JavaNCSS aggregate report.
  *
- * @author <a href="mperham AT gmail.com">Mike Perham</a>
+ * @author <a href="mailto:mperham@NOSPAMgmail.com">Mike Perham</a>
  * @version $Id$
  */
 public class NcssAggregateReportGenerator extends AbstractNcssReportGenerator {
 
     /**
+     * Creates the report generator
      * @param sink the sink that will be used for reporting.
      * @param bundle the correct RessourceBundle to be used for reporting.
      * @param log the logger to output log with.

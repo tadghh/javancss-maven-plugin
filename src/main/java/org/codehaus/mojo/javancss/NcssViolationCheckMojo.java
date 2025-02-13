@@ -93,9 +93,9 @@ public class NcssViolationCheckMojo extends AbstractMojo {
     private boolean skip;
 
     /**
-     *
-     * @throws MojoExecutionException
-     * @throws MojoFailureException
+     * Executes the report
+     * @throws MojoExecutionException bad
+     * @throws MojoFailureException bad
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

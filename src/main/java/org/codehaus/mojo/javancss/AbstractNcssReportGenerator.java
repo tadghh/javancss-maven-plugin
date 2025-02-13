@@ -29,7 +29,7 @@ import org.apache.maven.plugin.logging.Log;
  * Base abstract class for NCSSReport classes.<br>
  * It holds essentially helper methods on top of the Sink Doxia object.
  *
- * @author <a href="jeanlaurent@NOSPAMgmail.com>Jean-Laurent de Morlhon</a>
+ * @author <a href="mailto:jeanlaurent@NOSPAMgmail.com">Jean-Laurent de Morlhon</a>
  * @version $Id$
  */
 public abstract class AbstractNcssReportGenerator {
@@ -37,24 +37,46 @@ public abstract class AbstractNcssReportGenerator {
     private final Sink sink;
     private final Log log;
 
+    /**
+     * Creates the report generator
+     * @param sink sink
+     * @param bundle bundle
+     * @param log log
+     */
     protected AbstractNcssReportGenerator(Sink sink, ResourceBundle bundle, Log log) {
         this.bundle = bundle;
         this.sink = sink;
         this.log = log;
     }
 
+    /**
+     * Gets the log
+     * @return log
+     */
     public Log getLog() {
         return this.log;
     }
 
+    /**
+     * Gets the sink
+     * @return sink
+     */
     public Sink getSink() {
         return this.sink;
     }
 
+    /**
+     * Gets the resource bundle
+     * @return resource bundle
+     */
     public ResourceBundle getResourceBundle() {
         return this.bundle;
     }
 
+    /**
+     * List helper
+     * @param text text
+     */
     protected void codeItemListHelper(String text) {
         sink.listItem();
         sink.monospaced();
@@ -63,12 +85,20 @@ public abstract class AbstractNcssReportGenerator {
         sink.listItem_();
     }
 
+    /**
+     * List helper
+     * @param text text
+     */
     protected void paragraphHelper(String text) {
         sink.paragraph();
         sink.text(text);
         sink.paragraph_();
     }
 
+    /**
+     * List helper
+     * @param text text
+     */
     protected void subtitleHelper(String text) {
         sink.paragraph();
         sink.bold();
@@ -77,6 +107,10 @@ public abstract class AbstractNcssReportGenerator {
         sink.paragraph_();
     }
 
+    /**
+     * Code cell helper
+     * @param text text
+     */
     protected void codeCellHelper(String text) {
         sink.tableCell();
         sink.monospaced();
@@ -85,12 +119,20 @@ public abstract class AbstractNcssReportGenerator {
         sink.tableCell_();
     }
 
+    /**
+     * Header cell helper
+     * @param text text
+     */
     protected void headerCellHelper(String text) {
         sink.tableHeaderCell();
         sink.text(text);
         sink.tableHeaderCell_();
     }
 
+    /**
+     * Table cell helper
+     * @param text text
+     */
     protected void tableCellHelper(String text) {
         sink.tableCell();
         sink.text(text);
@@ -127,6 +169,11 @@ public abstract class AbstractNcssReportGenerator {
         sink.tableRow_();
     }
 
+    /**
+     * Starts a section
+     * @param link anchor link to section
+     * @param title title
+     */
     protected void startSection(String link, String title) {
         sink.section1();
         sink.sectionTitle1();
@@ -138,14 +185,26 @@ public abstract class AbstractNcssReportGenerator {
         sink.anchor_();
     }
 
+    /**
+     * ends a section
+     */
     protected void endSection() {
         sink.section1_();
     }
 
+    /**
+     * Gets the resource for the key
+     * @param key the key
+     * @return the resource for the key
+     */
     protected String getString(String key) {
         return bundle.getString(key);
     }
 
+    /**
+     * Intro
+     * @param withNavigationBar bar
+     */
     protected void doIntro(boolean withNavigationBar) {
         sink.section1();
         sink.sectionTitle1();
@@ -167,6 +226,9 @@ public abstract class AbstractNcssReportGenerator {
         sink.section1_();
     }
 
+    /**
+     * Navigation bar
+     */
     protected void navigationBar() {
         sink.paragraph();
         String[] sections = {

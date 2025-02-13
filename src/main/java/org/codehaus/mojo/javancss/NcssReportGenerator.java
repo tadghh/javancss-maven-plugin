@@ -94,6 +94,49 @@ public class NcssReportGenerator extends AbstractNcssReportGenerator {
         getSink().close();
     }
 
+    /**
+     * Starts a section
+     * @param link section anchor link
+     * @param title title
+     */
+    @Override
+    protected void startSection(String link, String title) {
+        super.startSection(link, title);
+        navigationBar();
+    }
+
+    /**
+     * Looks like a xrefLocation? IDK what this is
+     * @param clazz the class name
+     */
+    protected void jxrLink(String clazz) {
+        if (xrefLocation != null) {
+            getSink().link(xrefLocation + "/" + clazz.replace('.', '/') + ".html");
+        }
+        getSink().text(clazz);
+        if (xrefLocation != null) {
+            getSink().link_();
+        }
+    }
+
+    /**
+     * Function link xref
+     * @param clazz class name
+     */
+    protected void jxrFunctionLink(String clazz) {
+        int indexDot = -1;
+        if (xrefLocation != null) {
+            indexDot = clazz.lastIndexOf('.');
+            if (indexDot != -1) {
+                getSink().link(xrefLocation + "/" + clazz.substring(0, indexDot).replace('.', '/') + ".html");
+            }
+        }
+        getSink().text(clazz);
+        if (xrefLocation != null && indexDot != -1) {
+            getSink().link_();
+        }
+    }
+
     private void doMainPackageAnalysis(Document document) {
         subtitleHelper(getString("report.javancss.package.text"));
 
@@ -597,36 +640,5 @@ public class NcssReportGenerator extends AbstractNcssReportGenerator {
         getSink().list_();
         paragraphHelper(getString("report.javancss.explanation.ccn.paragraph4"));
         paragraphHelper(getString("report.javancss.explanation.ccn.paragraph5"));
-    }
-
-    // sink helper to start a section
-    @Override
-    protected void startSection(String link, String title) {
-        super.startSection(link, title);
-        navigationBar();
-    }
-
-    protected void jxrLink(String clazz) {
-        if (xrefLocation != null) {
-            getSink().link(xrefLocation + "/" + clazz.replace('.', '/') + ".html");
-        }
-        getSink().text(clazz);
-        if (xrefLocation != null) {
-            getSink().link_();
-        }
-    }
-
-    protected void jxrFunctionLink(String clazz) {
-        int indexDot = -1;
-        if (xrefLocation != null) {
-            indexDot = clazz.lastIndexOf('.');
-            if (indexDot != -1) {
-                getSink().link(xrefLocation + "/" + clazz.substring(0, indexDot).replace('.', '/') + ".html");
-            }
-        }
-        getSink().text(clazz);
-        if (xrefLocation != null && indexDot != -1) {
-            getSink().link_();
-        }
     }
 }
